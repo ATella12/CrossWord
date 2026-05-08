@@ -1,15 +1,16 @@
 import { ethers } from "ethers";
 import {
-  appendBuilderDataSuffix,
   assertBuilderAttributed,
+  appendBuilderSuffix,
 } from "../lib/builderAttribution";
 
 export async function sendTransactionWithBuilderCode(
   signer: ethers.Signer,
   tx: ethers.TransactionRequest,
 ) {
-  const data = appendBuilderDataSuffix((tx.data as string | undefined) || "0x");
+  const data = appendBuilderSuffix((tx.data as `0x${string}` | undefined) ?? "0x");
   assertBuilderAttributed(data);
+  console.log("FINAL_TX_DATA", data);
   return signer.sendTransaction({ ...tx, data });
 }
 

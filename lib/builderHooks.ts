@@ -5,6 +5,7 @@ import { useSendCalls } from "wagmi/experimental";
 import {
   sendCallsWithBuilderCode,
   sendTransactionWithBuilderCode,
+  withBuilderCodeProvider,
   writeContractWithBuilderCode,
 } from "./builderAttribution";
 
@@ -36,7 +37,7 @@ export function useBuilderWriteContract() {
       value?: bigint;
       chainId?: number;
     }) =>
-      writeContractWithBuilderCode(await getProvider(connector), {
+      writeContractWithBuilderCode(withBuilderCodeProvider(await getProvider(connector)), {
         from: params.account || address,
         ...params,
       }),
@@ -50,7 +51,7 @@ export function useBuilderSendTransaction() {
   return {
     ...sendTx,
     sendTransactionAsync: async (tx: Record<string, unknown>) =>
-      sendTransactionWithBuilderCode(await getProvider(connector), tx),
+      sendTransactionWithBuilderCode(withBuilderCodeProvider(await getProvider(connector)), tx),
   };
 }
 
@@ -70,7 +71,7 @@ export function useBuilderSendCalls() {
         from: params.from || address,
         sendCallsAsync: (sendCalls as { sendCallsAsync?: (args: unknown) => Promise<unknown> })
           .sendCallsAsync,
-        provider: await getProvider(connector),
+        provider: withBuilderCodeProvider(await getProvider(connector)),
       }),
   };
 }
